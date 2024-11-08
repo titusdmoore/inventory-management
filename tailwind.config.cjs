@@ -3,6 +3,7 @@ module.exports = {
   darkMode: ["class", '[data-kb-theme="dark"]'],
   content: ["src/routes/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}"],
   prefix: "",
+  safelist: [ 'min-h-screen', 'min-w-screen' ],
   theme: {
     container: {
       center: true,
