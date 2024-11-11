@@ -21,10 +21,10 @@ export async function GET({ request, params }: APIEvent) {
 // Creates a new Item
 export async function POST({ request }: APIEvent) {
 	try {
-		let res = await request.json();
+		let req = await request.json();
 
 		// TODO: Validate the request body.
-		const insertItem: typeof itemsTable.$inferInsert = res;
+		const insertItem: typeof itemsTable.$inferInsert = req;
 		const sqlItem = await db.insert(itemsTable).values(insertItem).$returningId();
 
 		return Response.json(sqlItem, { status: 200 });
