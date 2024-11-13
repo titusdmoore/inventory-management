@@ -9,16 +9,13 @@ import { itemsTable } from '~/db/schema';
 import { getPrice } from '~/utils/currency';
 
 const getItems = query(async () => {
+  "use server";
   try {
-      return await db.select().from(itemsTable);
+    return await db.select().from(itemsTable);
   } catch (error) {
     console.error(error);
   }
 }, "items");
-
-export const route = {
-  preload: () => getItems(),
-}
 
 export default function Items() {
   const items = createAsync(() => getItems());
@@ -31,55 +28,57 @@ export default function Items() {
 
   return (
     <main class="p-4">
-      <Button as="button" onClick={toggleView}>Toggle View Type</Button>
-        <button onClick={toggleView}>
-          Toggle Button
-        </button>
-      { viewGrid() ? (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <For each={items()} fallback={<div>Loading...</div>}>
-            {(item) => (
-              <Card>
-                <CardHeader>
-                  <CardTitle>{item.name}</CardTitle>
-                  <CardDescription>{getPrice(item.price, true)}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>{item.description}</p>
-                </CardContent>
-                <CardFooter>
-                  <p>Card Footer</p>
-                </CardFooter>
-              </Card>
-            )}
-          </For>
-        </div>
-      ) : (
-        <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Quantity</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <For each={items()} fallback={<div>Loading...</div>}>
-                {(item) => (
-                  <TableRow>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell>{getPrice(item.price)}</TableCell>
-                    <TableCell>{item.quantity}</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                )}
-              </For>
-            </TableBody>
-        </Table>
-      )}
+      <section class="mb-4 flex justify-between items-center w-full">
+        <h1 class="text-2xl font-bold">Items</h1>
+        <Button as="button" onClick={toggleView}>Toggle View Type</Button>
+      </section>
+      <section>
+        { viewGrid() ? (
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <For each={items()} fallback={<div>Loading...</div>}>
+              {(item) => (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>{item.name}</CardTitle>
+                    <CardDescription>{getPrice(item.price, true)}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>{item.description}</p>
+                  </CardContent>
+                  <CardFooter>
+                    <p>Card Footer</p>
+                  </CardFooter>
+                </Card>
+              )}
+            </For>
+          </div>
+        ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <For each={items()} fallback={<div>Loading...</div>}>
+                  {(item) => (
+                    <TableRow>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{getPrice(item.price)}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  )}
+                </For>
+              </TableBody>
+            </Table>
+          )}
+      </section>
     </main>
   );
 }
