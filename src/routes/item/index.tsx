@@ -1,6 +1,7 @@
-import { createAsync, query } from '@solidjs/router';
+import { A, createAsync, query } from '@solidjs/router';
 import { createSignal } from 'solid-js';
 import { For } from 'solid-js';
+import SwitchToggle from '~/components/SwitchToggle';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '~/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
@@ -30,25 +31,30 @@ export default function Items() {
     <main class="p-4">
       <section class="mb-4 flex justify-between items-center w-full">
         <h1 class="text-2xl font-bold">Items</h1>
-        <Button as="button" onClick={toggleView}>Toggle View Type</Button>
+        <div class="flex gap-4">
+          <Button as="a" href="/item/new">New Item</Button>
+          <Button as="button" onClick={toggleView}>Toggle View Type</Button>
+        </div>
       </section>
       <section>
         { viewGrid() ? (
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <For each={items()} fallback={<div>Loading...</div>}>
               {(item) => (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>{item.name}</CardTitle>
-                    <CardDescription>{getPrice(item.price, true)}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p>{item.description}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <p>Card Footer</p>
-                  </CardFooter>
-                </Card>
+                <A href={`/item/${item.id}`}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>{item.name}</CardTitle>
+                      <CardDescription>{getPrice(item.price, true)}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p>{item.description}</p>
+                    </CardContent>
+                    <CardFooter>
+                      <p>Card Footer</p>
+                    </CardFooter>
+                  </Card>
+                </A>
               )}
             </For>
           </div>
@@ -67,7 +73,7 @@ export default function Items() {
                 <For each={items()} fallback={<div>Loading...</div>}>
                   {(item) => (
                     <TableRow>
-                      <TableCell>{item.name}</TableCell>
+                      <TableCell><A href={`/item/${item.id}`}>{item.name}</A></TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>{getPrice(item.price)}</TableCell>
                       <TableCell>{item.quantity}</TableCell>
