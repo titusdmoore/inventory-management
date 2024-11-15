@@ -14,8 +14,8 @@ export default function Nav() {
         <li class={`${active("/about")}`}>
           <a href="/about">About</a>
         </li>
-        <li class={`${active("/item")}`}>
-          <a href="/item">Items</a>
+        <li class={`${active("/items")}`}>
+          <a href="/items">Items</a>
         </li>
       </ul>
     </nav>

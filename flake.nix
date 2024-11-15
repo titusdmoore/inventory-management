@@ -13,6 +13,7 @@
           buildInputs = with pkgs; [
             pnpm
             nodejs
+            sqlite
           ];
         };
       }
