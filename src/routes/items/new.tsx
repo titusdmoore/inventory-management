@@ -1,35 +1,31 @@
 import { TextField, TextFieldRoot, TextFieldLabel } from "~/components/ui/textfield";
 import { TextArea } from "~/components/ui/textarea";
 import { Button } from "~/components/ui/button";
+import { action, redirect } from "@solidjs/router";
+import { itemsTable } from "~/db/schema";
+import { db } from "~/db";
+
+const createItem = action(async (formData: FormData) => {
+  "use server";
+
+  try {
+    let formattedData: any = {};
+    formData.forEach((value, key) => (formattedData[key] = value));
+
+    const insertItem: typeof itemsTable.$inferInsert = formattedData;
+    await db.insert(itemsTable).values(insertItem).$returningId();
+
+    return redirect("/items", { revalidate: "items" });
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 export default function NewItem() {
-  const handleSubmit = async (e: Event) => {
-    e.preventDefault();
-
-    try {
-      const data = new FormData(e.target as HTMLFormElement);
-      let dataObj = Array.from(data.entries()).reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
-
-      let response = await fetch("/api/items", {
-        method: "POST",
-        body: JSON.stringify(dataObj),
-      });
-
-      if (response.ok) {
-
-        return;
-      }
-
-      throw new Error("Failed to create item");
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return (
     <main class="w-full h-full p-4">
       <h1 class="text-3xl mb-4">New Item</h1>
-      <form onSubmit={handleSubmit}>
+      <form action={createItem} method="post">
         <TextFieldRoot class="w-full max-w-xs">
           <TextFieldLabel>Item Name</TextFieldLabel>
           <TextField type="text" placeholder="Item Name" name="name" />

@@ -23,7 +23,8 @@ const removeItem = async (id: number) => {
   "use server";
   try {
     await db.delete(itemsTable).where(eq(itemsTable.id, id));
-    return reload({ revalidate: getItems.key });
+
+    return reload({ revalidate: "items" });
   } catch (error) {
     console.error(error);
   }
